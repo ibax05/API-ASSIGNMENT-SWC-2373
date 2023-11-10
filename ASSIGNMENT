@@ -1,0 +1,72 @@
+from webexteamssdk import WebexTeamsAPI;
+
+
+# Setup Webex Teams connection
+teams_token = input ("Enter Your access token")
+api = WebexTeamsAPI(access_token=teams_token)  
+
+def test_connection():
+    print("Connecting to Webex...")
+    me = api.people.me()
+    if me:
+        print("Connection successful!")
+
+def display_user_info():
+    me = api.people.me()
+    print(f"Display Name: {me.displayName}")
+    print(f"Nickname: {me.nickName}")
+    print(f"Emails: {me.emails}")
+    
+def list_rooms():
+    rooms = api.rooms.list()
+    for i, room in enumerate(rooms[:5]):
+        print(f"\nRoom {i+1}")
+        print(f"ID: {room.id}")
+        print(f"Title: {room.title}")
+        print(f"Created: {room.created}")
+        print(f"Last Activity: {room.lastActivity}")
+        
+def create_room():
+    title = input("Enter room title: ")
+    api.rooms.create(title=title)
+    print("Room created successfully!")
+    
+def send_message():
+    rooms = api.rooms.list()
+    
+    print("Select room:")
+    for i, room in enumerate(rooms[:5]):
+        print(f"{i+1}. {room.title} ({room.id})")
+    
+        
+    selection = input() 
+    selected_room = selection
+
+    message = input("Enter message: ")
+    api.messages.create(roomId=selected_room, text=message)
+    
+    print("Message sent!")
+
+# Menu logic
+while True:
+    print("\nMenu:")
+    print("0. Test Connection")
+    print("1. Display User Info") 
+    print("2. List Rooms")
+    print("3. Create Room")
+    print("4. Send Message")
+    
+    selection = input("\nSelect an option: ")
+    
+    if selection == "0":
+        test_connection()
+    elif selection == "1":
+        display_user_info()
+    elif selection == "2":
+        list_rooms()
+    elif selection == "3":
+        create_room()
+    elif selection == "4":
+        send_message()
+    else:
+        print("Invalid selection")
